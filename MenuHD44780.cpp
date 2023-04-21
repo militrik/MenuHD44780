@@ -2,23 +2,19 @@
 #include <cstring>
 #include <algorithm>
 
-char MenuHD44780::firstString[17];
-char MenuHD44780::secondString[17];
-
+char MenuHD44780::displayField[HD44780_ROWS][HD44780_COLUMNS+1] = {0};
 
 MenuHD44780::MenuHD44780() = default;
 
-void MenuHD44780::setMenuPtr(MenuHD44780 *) {
+void MenuHD44780::setMenuPtr(MenuHD44780 *) {}
 
-}
-
-void MenuHD44780::createItem(const char *formatter, void *varPtr, VarType varType, uint8_t pos) {
-    Item item = {formatter, varPtr, varType, pos};
+void MenuHD44780::createItem(const char *formatter, void *varPtr, VarType varType, uint8_t rowPos, uint8_t colPos) {
+    Item item = {formatter, varPtr, varType, rowPos, colPos};
     items.push_back(item);
 }
 
 void MenuHD44780::renewAll() {
-    char row[17];
+    char row[HD44780_COLUMNS + 1];
     for (Item item: items) {
         switch (item.varType) {
             case STRTYPE:
@@ -31,9 +27,10 @@ void MenuHD44780::renewAll() {
                 sprintf(row, item.format, *(float *) item.varPtr);
                 break;
         }
-        strncpy(item.pos < 40 ? firstString + item.pos : secondString + item.pos - 40, row, strlen(row));
+        strncpy(&MenuHD44780::displayField[item.rowPos][item.colPos], row, strlen(row));
     }
-    std::replace((char*)firstString, &firstString[0]+sizeof (firstString)-1, '\0', ' ');
-    std::replace((char*)secondString, &secondString[0]+sizeof (secondString)-1, '\0', ' ');
+    for (uint8_t i = 0; i < HD44780_ROWS; i++) {
+        std::replace(&MenuHD44780::displayField[i][0], &displayField[i][0] + HD44780_COLUMNS, '\0', ' ');
+    }
 }
 
