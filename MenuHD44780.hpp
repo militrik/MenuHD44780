@@ -28,7 +28,7 @@ struct Item {
 class MenuHD44780 {
 public:
     static MenuHD44780 *menuPtr;
-    static char displayField[HD44780_ROWS][HD44780_COLUMNS+1];
+
 
     MenuHD44780();
 
@@ -38,7 +38,10 @@ public:
 
     void renewAll();
 
+    static char* getDisplayField(uint8_t);
+
 private:
+    static char displayField[HD44780_ROWS][HD44780_COLUMNS+1];
     std::vector<Item> items;
 };
 

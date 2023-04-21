@@ -29,8 +29,12 @@ void MenuHD44780::renewAll() {
         }
         strncpy(&MenuHD44780::displayField[item.rowPos][item.colPos], row, strlen(row));
     }
-    for (uint8_t i = 0; i < HD44780_ROWS; i++) {
-        std::replace(&MenuHD44780::displayField[i][0], &displayField[i][0] + HD44780_COLUMNS, '\0', ' ');
+    for (auto & i : MenuHD44780::displayField) {
+        std::replace(&i[0], &i[0] + HD44780_COLUMNS, '\0', ' ');
     }
 }
 
+char* MenuHD44780::getDisplayField(uint8_t row) {
+    return &MenuHD44780::displayField[row][0];
+//    return 0;
+}
