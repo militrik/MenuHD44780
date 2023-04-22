@@ -23,7 +23,7 @@ void MenuHD44780::renewAll() {
 #include <cstring> // For memset
     memset(displayField, 0, sizeof(displayField));
     char row[HD44780_COLUMNS + 1];
-    for (Item item: items) {
+    for (Item item: (*MenuHD44780::menuPtr).items) {
         switch (item.varType) {
             case STRTYPE:
                 snprintf(row, sizeof row, item.format, (char *) item.varPtr);
@@ -55,18 +55,22 @@ MenuHD44780::MenuHD44780(MenuHD44780 *enterPtr, MenuHD44780 *escPtr, MenuHD44780
                                                      leftPtr(leftPtr), rightPtr(rightPtr) {}
 
 void MenuHD44780::enterAction() {
-    menuPtr = this->enterPtr;
+    menuPtr = MenuHD44780::menuPtr->enterPtr;
+    MenuHD44780::renewAll();
 }
 
 void MenuHD44780::escAction() {
-    menuPtr = this->escPtr;
+    menuPtr = MenuHD44780::menuPtr->escPtr;
+    MenuHD44780::renewAll();
 }
 
 void MenuHD44780::leftAction() {
-    menuPtr = this->leftPtr;
+    menuPtr = MenuHD44780::menuPtr->leftPtr;
+    MenuHD44780::renewAll();
 }
 
 void MenuHD44780::rightAction() {
-    menuPtr = this->rightPtr;
+    menuPtr = MenuHD44780::menuPtr->rightPtr;
+    MenuHD44780::renewAll();
 }
 

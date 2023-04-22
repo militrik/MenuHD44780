@@ -34,15 +34,14 @@ public:
     MenuHD44780();
     MenuHD44780(MenuHD44780 *, MenuHD44780 *, MenuHD44780 *, MenuHD44780 *);
     static void setMenuPtr(MenuHD44780 *);
-    static char *getDisplayField(uint8_t);
     static MenuHD44780 *getMenuPtr();
+    static char *getDisplayField(uint8_t);
+    static void renewAll();
+    static void enterAction();
+    static void escAction();
+    static void leftAction();
+    static void rightAction();
     void createItem(const char *formatter, void *varPtr, VarType varType, uint8_t rowPos, uint8_t colPos);
-    void renewAll();
-    void enterAction();
-    void escAction();
-    void leftAction();
-    void rightAction();
-
 
 private:
     static char displayField[HD44780_ROWS][HD44780_COLUMNS + 1];
