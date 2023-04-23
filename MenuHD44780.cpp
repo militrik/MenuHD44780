@@ -22,8 +22,6 @@ void MenuHD44780::createItem(const char *formatter, void *varPtr, VarType varTyp
 }
 
 void MenuHD44780::renewAll() {
-#include <cstring> // For memset
-
     memset(displayField, 0, sizeof(displayField));
     char row[HD44780_COLUMNS + 1];
     for (Item item: getMenuPtr()->items) {
@@ -52,7 +50,6 @@ void MenuHD44780::renewAll() {
 
 char *MenuHD44780::getDisplayField(uint8_t row) {
     return &MenuHD44780::displayField[row][0];
-//    return 0;
 }
 
 
