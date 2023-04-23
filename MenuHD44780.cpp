@@ -44,11 +44,9 @@ void MenuHD44780::renewAll() {
         std::replace(i, i + HD44780_COLUMNS, '\0', ' ');
     }
 
-////////////
-    for (uint8_t i = 0; i < HD44780_ROWS; ++i) {
-        printf("%s\n", MenuHD44780::getDisplayField(i));
-    }
-    /////////////
+//    for (  auto &i :MenuHD44780::displayField) {
+//        printf("%s\n", i);
+//    }
 
 }
 
