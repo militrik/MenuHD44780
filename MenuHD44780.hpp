@@ -29,27 +29,29 @@ struct Item {
 
 class MenuHD44780 {
 public:
+    typedef void (*pAction)(MenuHD44780 *);
+
     static MenuHD44780 *menuPtr;
 
     MenuHD44780();
-    MenuHD44780(MenuHD44780 *, MenuHD44780 *, MenuHD44780 *, MenuHD44780 *);
-    static void setMenuPtr(MenuHD44780 *);
+    MenuHD44780(void (*enterF)(MenuHD44780 *), MenuHD44780 *enterVar,
+                void (*escF)(MenuHD44780 *), MenuHD44780 *escVar,
+                void (*leftF)(MenuHD44780 *), MenuHD44780 *leftVar,
+                void (*rightF)(MenuHD44780 *), MenuHD44780 *rightVar);
+    static bool enterAction();
+    static bool escAction();
+    static bool leftAction();
+    static bool rightAction();
+    static void setMenuPtr(MenuHD44780 *menuptr);
     static MenuHD44780 *getMenuPtr();
-    static char *getDisplayField(uint8_t);
+    static char *getDisplayField(uint8_t row);
     static void renewAll();
-    static void enterAction();
-    static void escAction();
-    static void leftAction();
-    static void rightAction();
     void createItem(const char *formatter, void *varPtr, VarType varType, uint8_t rowPos, uint8_t colPos);
 
 private:
     static char displayField[HD44780_ROWS][HD44780_COLUMNS + 1];
-
-    MenuHD44780 * enterPtr;
-    MenuHD44780 * escPtr;
-    MenuHD44780 * leftPtr;
-    MenuHD44780 * rightPtr;
+    pAction enterF, escF, leftF, rightF;
+    MenuHD44780 *enterVar, *escVar, *leftVar, *rightVar;
     std::vector<Item> items;
 };
 
