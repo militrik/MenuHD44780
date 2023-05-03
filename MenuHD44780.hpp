@@ -14,7 +14,14 @@
 #define HD44780_MAX_ADDRESS 80
 
 enum VarType {
-    STRTYPE, INTTYPE, FLOATTYPE
+    STRTYPE,
+    UINT8TYPE,
+    SINT8TYPE,
+    UINT16TYPE,
+    SINT16TYPE,
+    UINT32TYPE,
+    SINT32TYPE,
+    FLOATTYPE
 };
 
 struct Item {
@@ -47,6 +54,7 @@ public:
     static char *getDisplayField(uint8_t row);
     static void renewAll();
     void createItem(const char *formatter, void *varPtr, VarType varType, uint8_t rowPos, uint8_t colPos);
+    void replaceItem(uint8_t, const char *formatter, void *varPtr, VarType varType, uint8_t rowPos, uint8_t colPos);
 
 private:
     static char displayField[HD44780_ROWS][HD44780_COLUMNS + 1];

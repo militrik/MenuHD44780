@@ -21,20 +21,41 @@ void MenuHD44780::createItem(const char *formatter, void *varPtr, VarType varTyp
     items.push_back(item);
 }
 
+void MenuHD44780::replaceItem(uint8_t vPos, const char *formatter, void *varPtr, VarType varType, uint8_t rowPos, uint8_t colPos) {
+    Item item = {formatter, varPtr, varType, rowPos, colPos};
+    items[vPos] = item;
+    renewAll();
+}
+
 void MenuHD44780::renewAll() {
     memset(displayField, 0, sizeof(displayField));
     char row[HD44780_COLUMNS + 1];
     for (Item item: getMenuPtr()->items) {
         switch (item.varType) {
-            case STRTYPE:
-                snprintf(row, sizeof row, item.format, (char *) item.varPtr);
-                break;
-            case INTTYPE:
-                snprintf(row, sizeof row, item.format, *(uint8_t *) item.varPtr);
-                break;
-            case FLOATTYPE:
-                snprintf(row, sizeof row, item.format, *(float *) item.varPtr);
-                break;
+        case STRTYPE:
+            snprintf(row, sizeof row, item.format, (char *) item.varPtr);
+            break;
+        case UINT8TYPE:
+            snprintf(row, sizeof row, item.format, *(uint8_t *) item.varPtr);
+            break;
+        case SINT8TYPE:
+            snprintf(row, sizeof row, item.format, *(int8_t *) item.varPtr);
+            break;
+        case UINT16TYPE:
+            snprintf(row, sizeof row, item.format, *(uint16_t *) item.varPtr);
+            break;
+        case SINT16TYPE:
+            snprintf(row, sizeof row, item.format, *(int16_t *) item.varPtr);
+            break;
+        case UINT32TYPE:
+            snprintf(row, sizeof row, item.format, *(uint32_t *) item.varPtr);
+            break;
+        case SINT32TYPE:
+            snprintf(row, sizeof row, item.format, *(int32_t *) item.varPtr);
+            break;
+        case FLOATTYPE:
+            snprintf(row, sizeof row, item.format, *(float *) item.varPtr);
+            break;
         }
         strncpy(&MenuHD44780::displayField[item.rowPos][item.colPos], row, strlen(row));
     }
@@ -63,8 +84,8 @@ bool MenuHD44780::enterAction() {
 }
 
 bool MenuHD44780::escAction() {
-    if (getMenuPtr()->enterF != nullptr) {
-        getMenuPtr()->enterF(getMenuPtr()->enterVar);
+    if (getMenuPtr()->escF != nullptr) {
+        getMenuPtr()->escF(getMenuPtr()->escVar);
         renewAll();
         return true;
     }
@@ -72,8 +93,8 @@ bool MenuHD44780::escAction() {
 }
 
 bool MenuHD44780::leftAction() {
-    if (getMenuPtr()->enterF != nullptr) {
-        getMenuPtr()->enterF(getMenuPtr()->enterVar);
+    if (getMenuPtr()->leftF != nullptr) {
+        getMenuPtr()->leftF(getMenuPtr()->leftVar);
         renewAll();
         return true;
     }
@@ -81,8 +102,8 @@ bool MenuHD44780::leftAction() {
 }
 
 bool MenuHD44780::rightAction() {
-    if (getMenuPtr()->enterF != nullptr) {
-        getMenuPtr()->enterF(getMenuPtr()->enterVar);
+    if (getMenuPtr()->rightF != nullptr) {
+        getMenuPtr()->rightF(getMenuPtr()->rightVar);
         renewAll();
         return true;
     }
