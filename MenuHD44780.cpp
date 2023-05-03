@@ -4,6 +4,8 @@
 
 char MenuHD44780::displayField[HD44780_ROWS][HD44780_COLUMNS + 1] = {0};
 
+uint32_t MenuHD44780::blinkCounter = 0;
+
 MenuHD44780::MenuHD44780() = default;
 
 MenuHD44780 *MenuHD44780::menuPtr = nullptr;
@@ -16,18 +18,19 @@ MenuHD44780 *MenuHD44780::getMenuPtr() {
     return menuPtr;
 }
 
-void MenuHD44780::createItem(const char *formatter, void *varPtr, VarType varType, uint8_t rowPos, uint8_t colPos) {
-    Item item = {formatter, varPtr, varType, rowPos, colPos};
+void MenuHD44780::createItem(const char *formatter, void *varPtr, VarType varType, uint8_t rowPos, uint8_t colPos, uint16_t blinkTicks) {
+    Item item = {formatter, varPtr, varType, rowPos, colPos, blinkTicks};
     items.push_back(item);
 }
 
-void MenuHD44780::replaceItem(uint8_t vPos, const char *formatter, void *varPtr, VarType varType, uint8_t rowPos, uint8_t colPos) {
-    Item item = {formatter, varPtr, varType, rowPos, colPos};
+void MenuHD44780::replaceItem(uint8_t vPos, const char *formatter, void *varPtr, VarType varType, uint8_t rowPos, uint8_t colPos, uint16_t blinkTicks) {
+    Item item = {formatter, varPtr, varType, rowPos, colPos, blinkTicks};
     items[vPos] = item;
     renewAll();
 }
 
 void MenuHD44780::renewAll() {
+    blinkCounter++;
     memset(displayField, 0, sizeof(displayField));
     char row[HD44780_COLUMNS + 1];
     for (Item item: getMenuPtr()->items) {
@@ -56,6 +59,10 @@ void MenuHD44780::renewAll() {
         case FLOATTYPE:
             snprintf(row, sizeof row, item.format, *(float *) item.varPtr);
             break;
+        }
+        if (item.blinkTicks>=2){
+            if (blinkCounter % item.blinkTicks < item.blinkTicks/2 ? true : false)
+                std::fill_n(row, strlen(row), ' ');
         }
         strncpy(&MenuHD44780::displayField[item.rowPos][item.colPos], row, strlen(row));
     }

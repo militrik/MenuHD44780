@@ -6,9 +6,10 @@
 #include <cstdint>
 #include <vector>
 
-/* User definers */
+/* User definers begin */
 #define HD44780_ROWS 2
 #define HD44780_COLUMNS 16
+/* User definers end */
 
 #define HD44780_MIN_ADDRESS 0
 #define HD44780_MAX_ADDRESS 80
@@ -30,6 +31,7 @@ struct Item {
     VarType varType;
     uint8_t rowPos;
     uint8_t colPos;
+    uint16_t blinkTicks;
 };
 
 //onFunc;
@@ -53,11 +55,12 @@ public:
     static MenuHD44780 *getMenuPtr();
     static char *getDisplayField(uint8_t row);
     static void renewAll();
-    void createItem(const char *formatter, void *varPtr, VarType varType, uint8_t rowPos, uint8_t colPos);
-    void replaceItem(uint8_t, const char *formatter, void *varPtr, VarType varType, uint8_t rowPos, uint8_t colPos);
+    void createItem(const char *formatter, void *varPtr, VarType varType, uint8_t rowPos, uint8_t colPos, uint16_t blinkTicks);
+    void replaceItem(uint8_t, const char *formatter, void *varPtr, VarType varType, uint8_t rowPos, uint8_t colPos, uint16_t blinkTicks);
 
 private:
     static char displayField[HD44780_ROWS][HD44780_COLUMNS + 1];
+    static uint32_t blinkCounter;
     pAction enterF, escF, leftF, rightF;
     MenuHD44780 *enterVar, *escVar, *leftVar, *rightVar;
     std::vector<Item> items;
