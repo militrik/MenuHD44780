@@ -14,30 +14,26 @@
 #define HD44780_MIN_ADDRESS 0
 #define HD44780_MAX_ADDRESS 80
 
-enum VarType {
-    STRTYPE,
-    UINT8TYPE,
-    SINT8TYPE,
-    UINT16TYPE,
-    SINT16TYPE,
-    UINT32TYPE,
-    SINT32TYPE,
-    FLOATTYPE
-};
-
-struct Item {
-    const char *format;
-    void *varPtr;
-    VarType varType;
-    uint8_t rowPos;
-    uint8_t colPos;
-    uint16_t blinkTicks;
-};
-
-//onFunc;
-
 class MenuHD44780 {
 public:
+    enum VarType {
+        STRTYPE,
+        UINT8TYPE,
+        SINT8TYPE,
+        UINT16TYPE,
+        SINT16TYPE,
+        UINT32TYPE,
+        SINT32TYPE,
+        FLOATTYPE,
+    };
+    struct Item {
+        const char *format;
+        void *varPtr;
+        VarType varType;
+        uint8_t rowPos;
+        uint8_t colPos;
+        uint16_t blinkTicks;
+    };
     typedef void (*pAction)(MenuHD44780 *);
 
     static MenuHD44780 *menuPtr;

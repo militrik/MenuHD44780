@@ -61,7 +61,7 @@ void MenuHD44780::renewAll() {
             break;
         }
         if (item.blinkTicks>=2){
-            if (blinkCounter % item.blinkTicks < item.blinkTicks/2 ? true : false)
+            if (blinkCounter % item.blinkTicks < item.blinkTicks / 2)
                 std::fill_n(row, strlen(row), ' ');
         }
         strncpy(&MenuHD44780::displayField[item.rowPos][item.colPos], row, strlen(row));
@@ -69,10 +69,6 @@ void MenuHD44780::renewAll() {
     for (auto &i: MenuHD44780::displayField) {
         std::replace(i, i + HD44780_COLUMNS, '\0', ' ');
     }
-
-//    for (  auto &i :MenuHD44780::displayField) {
-//        printf("%s\n", i);
-//    }
 
 }
 
