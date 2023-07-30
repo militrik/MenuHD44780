@@ -8,6 +8,9 @@ uint32_t MenuHD44780::blinkCounter = 0;
 
 MenuHD44780::MenuHD44780() = default;
 
+MenuHD44780::MenuHD44780(void (*enterF)(), void (*escF)(), void (*leftF)(), void (*rightF)())
+        : enterF(enterF), escF(escF), leftF(leftF), rightF(rightF) {}
+
 MenuHD44780 *MenuHD44780::menuPtr = nullptr;
 
 void MenuHD44780::setMenuPtr(MenuHD44780 *menuptr) {
@@ -18,53 +21,46 @@ MenuHD44780 *MenuHD44780::getMenuPtr() {
     return menuPtr;
 }
 
-void MenuHD44780::createItem(const char *formatter, void *varPtr, VarType varType, uint8_t rowPos, uint8_t colPos, uint16_t blinkTicks) {
-    Item item = {formatter, varPtr, varType, rowPos, colPos, blinkTicks};
-    items.push_back(item);
-}
-
-void MenuHD44780::replaceItem(uint8_t vPos, const char *formatter, void *varPtr, VarType varType, uint8_t rowPos, uint8_t colPos, uint16_t blinkTicks) {
-    Item item = {formatter, varPtr, varType, rowPos, colPos, blinkTicks};
-    items[vPos] = item;
-    renewAll();
+void MenuHD44780::createItem(const char* name, Item item) {
+    items[const_cast<char*>(name)] = item;
 }
 
 void MenuHD44780::renewAll() {
     blinkCounter++;
     memset(displayField, 0, sizeof(displayField));
     char row[HD44780_COLUMNS + 1];
-    for (Item item: getMenuPtr()->items) {
-        switch (item.varType) {
+    for (auto item: getMenuPtr()->items) {
+        switch (item.second.varType) {
             case STRTYPE:
-                snprintf(row, sizeof row, item.format, (char *) item.varPtr);
+                snprintf(row, sizeof row, item.second.format, (char *) item.second.varPtr);
                 break;
             case UINT8TYPE:
-                snprintf(row, sizeof row, item.format, *(uint8_t *) item.varPtr);
+                snprintf(row, sizeof row, item.second.format, *(uint8_t *) item.second.varPtr);
                 break;
             case SINT8TYPE:
-                snprintf(row, sizeof row, item.format, *(int8_t *) item.varPtr);
+                snprintf(row, sizeof row, item.second.format, *(int8_t *) item.second.varPtr);
                 break;
             case UINT16TYPE:
-                snprintf(row, sizeof row, item.format, *(uint16_t *) item.varPtr);
+                snprintf(row, sizeof row, item.second.format, *(uint16_t *) item.second.varPtr);
                 break;
             case SINT16TYPE:
-                snprintf(row, sizeof row, item.format, *(int16_t *) item.varPtr);
+                snprintf(row, sizeof row, item.second.format, *(int16_t *) item.second.varPtr);
                 break;
             case UINT32TYPE:
-                snprintf(row, sizeof row, item.format, *(uint32_t *) item.varPtr);
+                snprintf(row, sizeof row, item.second.format, *(uint32_t *) item.second.varPtr);
                 break;
             case SINT32TYPE:
-                snprintf(row, sizeof row, item.format, *(int32_t *) item.varPtr);
+                snprintf(row, sizeof row, item.second.format, *(int32_t *) item.second.varPtr);
                 break;
             case FLOATTYPE:
-                snprintf(row, sizeof row, item.format, *(float *) item.varPtr);
+                snprintf(row, sizeof row, item.second.format, *(float *) item.second.varPtr);
                 break;
         }
-        if (item.blinkTicks>=2){
-            if (blinkCounter % item.blinkTicks < item.blinkTicks / 2)
+        if (item.second.blinkTicks>=2){
+            if (blinkCounter % item.second.blinkTicks < item.second.blinkTicks / 2)
                 std::fill_n(row, strlen(row), ' ');
         }
-        strncpy(&MenuHD44780::displayField[item.rowPos][item.colPos], row, strlen(row));
+        strncpy(&MenuHD44780::displayField[item.second.rowPos][item.second.colPos], row, strlen(row));
     }
     for (auto &i: MenuHD44780::displayField) {
         std::replace(i, i + HD44780_COLUMNS, '\0', ' ');
@@ -110,7 +106,4 @@ bool MenuHD44780::rightAction() {
     }
     return false;
 }
-
-MenuHD44780::MenuHD44780(void (*enterF)(), void (*escF)(), void (*leftF)(), void (*rightF)())
-        : enterF(enterF), escF(escF), leftF(leftF), rightF(rightF) {}
 

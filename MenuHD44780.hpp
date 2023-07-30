@@ -1,10 +1,9 @@
-#ifndef __MENU
-#define __MENU
+#ifndef __MENUHD44780
+#define __MENUHD44780
 
-#include <cstdarg>
 #include <cstdio>
 #include <cstdint>
-#include <vector>
+#include <unordered_map>
 
 /* User definers begin */
 #define HD44780_ROWS 2
@@ -34,8 +33,9 @@ public:
         uint8_t colPos;
         uint16_t blinkTicks;
     };
-    typedef void (*pAction)();
 
+
+    using pAction = void (*)();
     static MenuHD44780 *menuPtr;
 
     MenuHD44780();
@@ -49,15 +49,13 @@ public:
     static MenuHD44780 *getMenuPtr();
     static char *getDisplayField(uint8_t row);
     static void renewAll();
-    void createItem(const char *formatter, void *varPtr, VarType varType, uint8_t rowPos, uint8_t colPos, uint16_t blinkTicks);
-    void replaceItem(uint8_t, const char *formatter, void *varPtr, VarType varType, uint8_t rowPos, uint8_t colPos, uint16_t blinkTicks);
+    void createItem(const char* name, Item item);
 
 private:
     static char displayField[HD44780_ROWS][HD44780_COLUMNS + 1];
     static uint32_t blinkCounter;
     pAction enterF, escF, leftF, rightF;
-    //MenuHD44780 *enterVar, *escVar, *leftVar, *rightVar;
-    std::vector<Item> items;
+    std::unordered_map<char *, Item> items;
 };
 
 #endif
