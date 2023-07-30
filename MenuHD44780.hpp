@@ -34,15 +34,13 @@ public:
         uint8_t colPos;
         uint16_t blinkTicks;
     };
-    typedef void (*pAction)(MenuHD44780 *);
+    typedef void (*pAction)();
 
     static MenuHD44780 *menuPtr;
 
     MenuHD44780();
-    MenuHD44780(void (*enterF)(MenuHD44780 *), MenuHD44780 *enterVar,
-                void (*escF)(MenuHD44780 *), MenuHD44780 *escVar,
-                void (*leftF)(MenuHD44780 *), MenuHD44780 *leftVar,
-                void (*rightF)(MenuHD44780 *), MenuHD44780 *rightVar);
+    MenuHD44780(void (*enterF)(), void (*escF)(), void (*leftF)(), void (*rightF)());
+
     static bool enterAction();
     static bool escAction();
     static bool leftAction();
@@ -58,7 +56,7 @@ private:
     static char displayField[HD44780_ROWS][HD44780_COLUMNS + 1];
     static uint32_t blinkCounter;
     pAction enterF, escF, leftF, rightF;
-    MenuHD44780 *enterVar, *escVar, *leftVar, *rightVar;
+    //MenuHD44780 *enterVar, *escVar, *leftVar, *rightVar;
     std::vector<Item> items;
 };
 

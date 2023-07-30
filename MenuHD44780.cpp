@@ -35,30 +35,30 @@ void MenuHD44780::renewAll() {
     char row[HD44780_COLUMNS + 1];
     for (Item item: getMenuPtr()->items) {
         switch (item.varType) {
-        case STRTYPE:
-            snprintf(row, sizeof row, item.format, (char *) item.varPtr);
-            break;
-        case UINT8TYPE:
-            snprintf(row, sizeof row, item.format, *(uint8_t *) item.varPtr);
-            break;
-        case SINT8TYPE:
-            snprintf(row, sizeof row, item.format, *(int8_t *) item.varPtr);
-            break;
-        case UINT16TYPE:
-            snprintf(row, sizeof row, item.format, *(uint16_t *) item.varPtr);
-            break;
-        case SINT16TYPE:
-            snprintf(row, sizeof row, item.format, *(int16_t *) item.varPtr);
-            break;
-        case UINT32TYPE:
-            snprintf(row, sizeof row, item.format, *(uint32_t *) item.varPtr);
-            break;
-        case SINT32TYPE:
-            snprintf(row, sizeof row, item.format, *(int32_t *) item.varPtr);
-            break;
-        case FLOATTYPE:
-            snprintf(row, sizeof row, item.format, *(float *) item.varPtr);
-            break;
+            case STRTYPE:
+                snprintf(row, sizeof row, item.format, (char *) item.varPtr);
+                break;
+            case UINT8TYPE:
+                snprintf(row, sizeof row, item.format, *(uint8_t *) item.varPtr);
+                break;
+            case SINT8TYPE:
+                snprintf(row, sizeof row, item.format, *(int8_t *) item.varPtr);
+                break;
+            case UINT16TYPE:
+                snprintf(row, sizeof row, item.format, *(uint16_t *) item.varPtr);
+                break;
+            case SINT16TYPE:
+                snprintf(row, sizeof row, item.format, *(int16_t *) item.varPtr);
+                break;
+            case UINT32TYPE:
+                snprintf(row, sizeof row, item.format, *(uint32_t *) item.varPtr);
+                break;
+            case SINT32TYPE:
+                snprintf(row, sizeof row, item.format, *(int32_t *) item.varPtr);
+                break;
+            case FLOATTYPE:
+                snprintf(row, sizeof row, item.format, *(float *) item.varPtr);
+                break;
         }
         if (item.blinkTicks>=2){
             if (blinkCounter % item.blinkTicks < item.blinkTicks / 2)
@@ -69,17 +69,15 @@ void MenuHD44780::renewAll() {
     for (auto &i: MenuHD44780::displayField) {
         std::replace(i, i + HD44780_COLUMNS, '\0', ' ');
     }
-
 }
 
 char *MenuHD44780::getDisplayField(uint8_t row) {
     return &MenuHD44780::displayField[row][0];
 }
 
-
 bool MenuHD44780::enterAction() {
     if (getMenuPtr()->enterF != nullptr) {
-        getMenuPtr()->enterF(getMenuPtr()->enterVar);
+        getMenuPtr()->enterF();
         renewAll();
         return true;
     }
@@ -88,7 +86,7 @@ bool MenuHD44780::enterAction() {
 
 bool MenuHD44780::escAction() {
     if (getMenuPtr()->escF != nullptr) {
-        getMenuPtr()->escF(getMenuPtr()->escVar);
+        getMenuPtr()->escF();
         renewAll();
         return true;
     }
@@ -97,7 +95,7 @@ bool MenuHD44780::escAction() {
 
 bool MenuHD44780::leftAction() {
     if (getMenuPtr()->leftF != nullptr) {
-        getMenuPtr()->leftF(getMenuPtr()->leftVar);
+        getMenuPtr()->leftF();
         renewAll();
         return true;
     }
@@ -106,20 +104,13 @@ bool MenuHD44780::leftAction() {
 
 bool MenuHD44780::rightAction() {
     if (getMenuPtr()->rightF != nullptr) {
-        getMenuPtr()->rightF(getMenuPtr()->rightVar);
+        getMenuPtr()->rightF();
         renewAll();
         return true;
     }
     return false;
 }
 
-MenuHD44780::MenuHD44780(void (*enterF)(MenuHD44780 *), MenuHD44780 *enterVar,
-                         void (*escF)(MenuHD44780 *), MenuHD44780 *escVar,
-                         void (*leftF)(MenuHD44780 *), MenuHD44780 *leftVar,
-                         void (*rightF)(MenuHD44780 *), MenuHD44780 *rightVar) :
-        enterF(enterF), enterVar(enterVar),
-        escF(escF), escVar(escVar),
-        leftF(leftF), leftVar(leftVar),
-        rightF(rightF), rightVar(rightVar) {}
-
+MenuHD44780::MenuHD44780(void (*enterF)(), void (*escF)(), void (*leftF)(), void (*rightF)())
+        : enterF(enterF), escF(escF), leftF(leftF), rightF(rightF) {}
 
